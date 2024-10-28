@@ -6,6 +6,9 @@
     <style>
       body {
         background-color: slategrey;
+        text-align: center;
+        min-width: 380px;
+        font-family: monospace;
       }
 
       .largeBtn {
@@ -17,8 +20,7 @@
         border-radius: 10px;
         border: none;
         padding: 20px 40px;
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin: 10px 0px 10px 0px;
       }
 
       .smallBtn {
@@ -64,8 +66,8 @@
     </div>
 
     <button class="largeBtn" style="background-color: rgb(67, 75, 84); width: 60%;" onclick="horn()">Horn</button>
-    
-    <script>
+
+   <script>
       var isActive = false;
       var interval;
       var totalTime = 120;
@@ -73,6 +75,11 @@
 
       var countdownAudio = new Audio("5s_countdown.mp3");
       var halfwayAudio = new Audio("half.mp3");
+      var hornAudio = new Audio("horn.mp3");
+
+      countdownAudio.load();
+      halfwayAudio.load();
+      hornAudio.load();
 
       function pad(num, size) {
           num = num.toString();
@@ -109,6 +116,7 @@
             time = totalTime;
           } else if (time == 5) {
             console.log("5s remaining");
+            countdownAudio.currentTime = 0;
             countdownAudio.play();
           } else if (time == Math.round(totalTime/2)) {
             console.log("half way");
@@ -127,10 +135,15 @@
       function action() {
         if (interval) {
           stopTimer();
-          document.getElementById("action").textContent = "Start";
+          document.getElementById("action").textContent = "Resume";
+          countdownAudio.pause();
         } else {
           startTimer();
           document.getElementById("action").textContent = "Pause";
+
+          if (time < 5) {
+            countdownAudio.play();
+          }
         }
       }
 
@@ -138,6 +151,8 @@
         stopTimer();
 
         time = totalTime;
+        countdownAudio.pause();
+        countdownAudio.currentTime = 0;
 
         document.getElementById("action").textContent = "Start";
         updateTime();
@@ -156,6 +171,11 @@
           time = totalTime;
           updateTime();
         }
+      }
+
+      function horn() {
+        hornAudio.currentTime = 0;
+        hornAudio.play();
       }
     </script>
   </body>
