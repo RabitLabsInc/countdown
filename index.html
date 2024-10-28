@@ -62,22 +62,17 @@
       <div id="totalTime">2:00</div>
       <button class="smallBtn" style="width: unset;" onclick="setTotalTime(15)">+15</button>
     </div>
+
+    <button class="largeBtn" style="background-color: rgb(67, 75, 84); width: 60%;" onclick="horn()">Horn</button>
+    
     <script>
       var isActive = false;
       var interval;
       var totalTime = 120;
       var time = 120;
 
-      var audioFiles = [
-        /*new Audio("0.mp3"),
-        new Audio("1.mp3"),
-        new Audio("2.mp3"),
-        new Audio("3.mp3"),
-        new Audio("4.mp3"),
-        new Audio("5.mp3"),*/
-        new Audio("half.mp3"),
-        new Audio("5s_countdown.mp3")
-      ]
+      var countdownAudio = new Audio("5s_countdown.mp3");
+      var halfwayAudio = new Audio("half.mp3");
 
       function pad(num, size) {
           num = num.toString();
@@ -99,21 +94,10 @@
         let label = document.getElementById("timer")
         label.textContent = secondsToString(time);
 
-        if (min == 0 && sec <= 5) {
-          console.log(sec);
+        if (time <= 5) {
           label.style.color = "salmon";
-
-          if (sec ==5) {
-            console.log("playing countdown");
-            audioFiles[1].play();
-          }
         } else {
           label.style.color = "white";
-
-          if (time == Math.round(totalTime/2)) {
-            console.log("half way");
-            audioFiles[0].play();
-          }
         }
       }
 
@@ -123,6 +107,12 @@
 
           if (time < 0) {
             time = totalTime;
+          } else if (time == 5) {
+            console.log("5s remaining");
+            countdownAudio.play();
+          } else if (time == Math.round(totalTime/2)) {
+            console.log("half way");
+            halfwayAudio.play();
           }
 
           updateTime();
@@ -149,9 +139,8 @@
 
         time = totalTime;
 
-        startTimer();
+        document.getElementById("action").textContent = "Start";
         updateTime();
-
       }
 
       function setTotalTime(value) {
