@@ -56,8 +56,19 @@
   </head>
   <body>
     <div id="timer">2:00</div>
-    <button class="largeBtn" id="action" onclick="action()">Start</button>
-    <button class="largeBtn" style="background-color: salmon;" onclick="reset()">Reset</button>
+    <button class="largeBtn" id="action" onclick="action()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+        <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445"/>
+      </svg>
+      Start
+    </button>
+    <button class="largeBtn" style="background-color: salmon;" onclick="reset()"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+      <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
+      <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
+    </svg>
+      Reset
+    </button>
     
     <div style="text-align: center;">
       <button class="smallBtn" style="width: unset;" onclick="setTotalTime(-15)">-15</button>
@@ -65,7 +76,12 @@
       <button class="smallBtn" style="width: unset;" onclick="setTotalTime(15)">+15</button>
     </div>
 
-    <button class="largeBtn" style="background-color: rgb(67, 75, 84); width: 60%;" onclick="horn()">Horn</button>
+    <button class="largeBtn" style="background-color: rgb(67, 75, 84); width: 60%;" onclick="horn()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-megaphone" viewBox="0 0 16 16">
+        <path d="M13 2.5a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-3 0v-.214c-2.162-1.241-4.49-1.843-6.912-2.083l.405 2.712A1 1 0 0 1 5.51 15.1h-.548a1 1 0 0 1-.916-.599l-1.85-3.49-.202-.003A2.014 2.014 0 0 1 0 9V7a2.02 2.02 0 0 1 1.992-2.013 75 75 0 0 0 2.483-.075c3.043-.154 6.148-.849 8.525-2.199zm1 0v11a.5.5 0 0 0 1 0v-11a.5.5 0 0 0-1 0m-1 1.35c-2.344 1.205-5.209 1.842-8 2.033v4.233q.27.015.537.036c2.568.189 5.093.744 7.463 1.993zm-9 6.215v-4.13a95 95 0 0 1-1.992.052A1.02 1.02 0 0 0 1 7v2c0 .55.448 1.002 1.006 1.009A61 61 0 0 1 4 10.065m-.657.975 1.609 3.037.01.024h.548l-.002-.014-.443-2.966a68 68 0 0 0-1.722-.082z"/>
+      </svg>
+      Horn
+    </button>
 
    <script>
       var isActive = false;
@@ -95,13 +111,14 @@
       }
 
       function updateTime() {
-        var min = Math.floor(time/60);
-        var sec = time%60;
+        let seconds = Math.ceil(time);
+        var min = Math.floor(seconds/60);
+        var sec = seconds%60;
 
         let label = document.getElementById("timer")
-        label.textContent = secondsToString(time);
+        label.textContent = secondsToString(seconds);
 
-        if (time < 5) {
+        if (seconds <= 5) {
           label.style.color = "salmon";
         } else {
           label.style.color = "white";
@@ -112,12 +129,15 @@
         interval = setInterval(() => {
           time -= 0.01;
 
-          if (time < 0) {
+          let seconds = Math.ceil(time);
+
+          if (seconds < 0) {
             time = totalTime;
-          } else if (time < 5 && countdownAudio.paused) {
+          } else if (seconds == 5 && countdownAudio.paused) {
             console.log("5s remaining");
+            countdownAudio.currentTime = 0;
             countdownAudio.play();
-          } else if (time == Math.round(totalTime/2)) {
+          } else if (seconds == Math.round(totalTime/2) && halfwayAudio.paused) {
             console.log("half way");
             halfwayAudio.play();
           }
@@ -134,13 +154,21 @@
       function action() {
         if (interval) {
           stopTimer();
-          document.getElementById("action").textContent = "Start";
-          if (!countdownAudio.paused) { 
-            countdownAudio.pause();
-          }
+          document.getElementById("action").innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445"/>
+</svg> Start`
+          countdownAudio.pause();
         } else {
           startTimer();
-          document.getElementById("action").textContent = "Pause";
+          document.getElementById("action").innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-pause-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path d="M5 6.25a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0zm3.5 0a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0z"/>
+</svg> Pause`;
+
+          if (time <= 5) {
+            countdownAudio.play();
+          }
         }
       }
 
