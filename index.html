@@ -135,7 +135,6 @@
             time = totalTime;
           } else if (seconds == 5 && countdownAudio.paused) {
             console.log("5s remaining");
-            countdownAudio.currentTime = 0;
             countdownAudio.play();
           } else if (seconds == Math.round(totalTime/2) && halfwayAudio.paused) {
             console.log("half way");
@@ -200,7 +199,11 @@
 
       function horn() {
         hornAudio.currentTime = 0;
-        hornAudio.play();
+
+        setTimeout(() => {
+           hornAudio.play();
+        }, 1);
+       
       }
     </script>
   </body>
